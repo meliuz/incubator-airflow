@@ -240,7 +240,7 @@ def action_logging(f):
         session = settings.Session()
 
         if current_user and hasattr(current_user, 'username'):
-            user = current_user.username
+            user = current_user.user.username
         else:
             user = 'anonymous'
 
@@ -279,7 +279,7 @@ def notify_owner(f):
             task = dag.get_task(task_id)
 
             if current_user and hasattr(current_user, 'username'):
-                user = current_user.username
+                user = current_user.user.username
             else:
                 user = 'anonymous'
 
