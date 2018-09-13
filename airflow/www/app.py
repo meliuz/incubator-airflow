@@ -18,7 +18,6 @@
 # under the License.
 #
 import six
-import os
 
 from flask import Flask
 from flask_admin import Admin, base
@@ -49,13 +48,7 @@ def create_app(config=None, testing=False):
 
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
-
-    if configuration.conf.get('webserver', 'SECRET_KEY') == "temporary_key":
-        log.info("SECRET_KEY for Flask App is not specified. Using a random one.")
-        app.secret_key = os.urandom(16)
-    else:
-        app.secret_key = configuration.conf.get('webserver', 'SECRET_KEY')
-
+    app.secret_key = configuration.conf.get('webserver', 'SECRET_KEY')
     app.config['LOGIN_DISABLED'] = not configuration.conf.getboolean(
         'webserver', 'AUTHENTICATE')
 
@@ -70,8 +63,8 @@ def create_app(config=None, testing=False):
     api.load_auth()
     api.api_auth.init_app(app)
 
-    cache = Cache(
-        app=app, config={'CACHE_TYPE': 'filesystem', 'CACHE_DIR': '/tmp'})
+    # flake8: noqa: F841
+    cache = Cache(app=app, config={'CACHE_TYPE': 'filesystem', 'CACHE_DIR': '/tmp'})
 
     app.register_blueprint(routes)
 

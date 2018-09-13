@@ -19,7 +19,6 @@
 #
 import socket
 import six
-import os
 
 from flask import Flask
 from flask_appbuilder import AppBuilder, SQLA
@@ -43,10 +42,7 @@ def create_app(config=None, session=None, testing=False, app_name="Airflow"):
     global app, appbuilder
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
-    if conf.get('webserver', 'SECRET_KEY') == "temporary_key":
-        app.secret_key = os.urandom(16)
-    else:
-        app.secret_key = conf.get('webserver', 'SECRET_KEY')
+    app.secret_key = conf.get('webserver', 'SECRET_KEY')
 
     airflow_home_path = conf.get('core', 'AIRFLOW_HOME')
     webserver_config_path = airflow_home_path + '/webserver_config.py'
@@ -62,7 +58,8 @@ def create_app(config=None, session=None, testing=False, app_name="Airflow"):
     api.load_auth()
     api.api_auth.init_app(app)
 
-    cache = Cache(app=app, config={'CACHE_TYPE': 'filesystem', 'CACHE_DIR': '/tmp'})  # noqa
+    # flake8: noqa: F841
+    cache = Cache(app=app, config={'CACHE_TYPE': 'filesystem', 'CACHE_DIR': '/tmp'})
 
     from airflow.www_rbac.blueprints import routes
     app.register_blueprint(routes)

@@ -22,6 +22,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from base64 import b64encode
 from builtins import str
 from collections import OrderedDict
 import copy
@@ -138,6 +139,7 @@ class AirflowConfigParser(ConfigParser):
         'celery': {
             # Remove these keys in Airflow 1.11
             'worker_concurrency': 'celeryd_concurrency',
+            'result_backend': 'celery_result_backend',
             'broker_url': 'celery_broker_url',
             'ssl_active': 'celery_ssl_active',
             'ssl_cert': 'celery_ssl_cert',
@@ -477,6 +479,8 @@ if not os.path.isfile(TEST_CONFIG_FILE) or not os.path.isfile(AIRFLOW_CONFIG):
     FERNET_KEY = generate_fernet_key()
 else:
     FERNET_KEY = ''
+
+SECRET_KEY = b64encode(os.urandom(16)).decode('utf-8')
 
 TEMPLATE_START = (
     '# ----------------------- TEMPLATE BEGINS HERE -----------------------')

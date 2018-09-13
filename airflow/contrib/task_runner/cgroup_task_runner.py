@@ -117,13 +117,13 @@ class CgroupTaskRunner(BaseTaskRunner):
                 "creating another one",
                 cgroups.get("cpu"), cgroups.get("memory")
             )
-            self.process = self.run_command(['bash', '-c'], join_args=True)
+            self.process = self.run_command()
             return
 
         # Create a unique cgroup name
         cgroup_name = "airflow/{}/{}".format(datetime.datetime.utcnow().
                                              strftime("%Y-%m-%d"),
-                                             str(uuid.uuid1()))
+                                             str(uuid.uuid4()))
 
         self.mem_cgroup_name = "memory/{}".format(cgroup_name)
         self.cpu_cgroup_name = "cpu/{}".format(cgroup_name)
