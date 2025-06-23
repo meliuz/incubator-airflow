@@ -1,0 +1,6 @@
+---
+site_name: incubator-airflow
+nav:
+  - Home: README.md
+plugins:
+  - techdocs-core
